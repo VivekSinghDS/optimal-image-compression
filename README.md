@@ -1,1 +1,0 @@
-# optimal-image-compression
