@@ -1,9 +1,15 @@
-FROM python:3.8.8
+FROM python:3.9.10
 
-WORKDIR /app
-COPY requirements_flask.txt requirements_flask.txt
-RUN pip install -r requirements_flask.txt
+RUN useradd -ms /bin/bash appuser
+WORKDIR /home/appuser
 
-COPY . .
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y && rm -rf /var/lib/apt/lists/*
+
+COPY requirements_fastapi.txt ./requirements.txt
+RUN pip install -r requirements.txt
+
+USER appuser
 EXPOSE 5000
-CMD ["gunicorn", "--bind=0.0.0.0:5000", "predict_flask:app"]
+COPY . .
+
+CMD ["python", "predict_fastapi.py"]
